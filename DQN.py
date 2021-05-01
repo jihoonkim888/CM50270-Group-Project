@@ -139,7 +139,7 @@ class Agent:
 #         # print(target_q_val.shape, q_target.shape, indices.shape, action_batch.shape)
 #         q_target[[indices], [action_batch]] = target_q_val
 
-    def train_model(self, env, num_episodes, graph):
+    def train_model(self, env, num_episodes, graph, earlystopping=True):
         
         scores, episodes, avg_scores, obj = [], [], [], []
         goal = 150
@@ -150,14 +150,15 @@ class Agent:
         for i in range(num_episodes):
 
             # Early stopping...
-            if avg_score > goal:
-                print("The average rewards of the last 100 episodes > {}. Early stopping in Episode {}...".format(goal, i))
-                self.model.save(("saved_networks/dqn_model{0}".format(i)))
-                self.model.save_weights(("saved_networks/dqn_model{0}/net_weights{0}.h5".format(i)))
-                txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
-                                                                                                  score, self.epsilon,
-                                                                                                  avg_score))
-                return
+            if earlystopping:
+	            if avg_score > goal:
+	                print("The average rewards of the last 100 episodes > {}. Early stopping in Episode {}...".format(goal, i))
+	                self.model.save(("saved_networks/dqn_model{0}".format(i)))
+	                self.model.save_weights(("saved_networks/dqn_model{0}/net_weights{0}.h5".format(i)))
+	                txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
+	                                                                                                  score, self.epsilon,
+	                                                                                                  avg_score))
+	                return
 
             done = False
             score = 0.0
