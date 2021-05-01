@@ -54,7 +54,7 @@ def model(lr, num_actions, input_dims):
     model.add(Dense(num_actions, activation='linear'))
     model.compile(loss='mse',optimizer=Adam(lr=lr))
 
-    print(model.summary())
+    # print(model.summary())
 
     return model
 
@@ -144,7 +144,7 @@ class Agent:
         scores, episodes, avg_scores, obj = [], [], [], []
         goal = 150
         avg_score = 0
-        txt = open("saved_networks.txt", "w")
+        # txt = open("saved_networks.txt", "w")
         t1 = time.perf_counter()
 
         for i in range(num_episodes):
@@ -180,44 +180,34 @@ class Agent:
             
             # avg_score_10 = np.mean(scores[-10:])
             
-            print_count = 50
-            if (i % print_count == 0) and (i != 0):
-#                 plot_graph(episodes, scores, avg_scores, obj)
-                print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, self.epsilon, avg_score))
-                t2 = time.perf_counter()
-                print("Finished {} episodes in {} seconds".format(print_count, t2-t1))
-                t1 = time.perf_counter()
+#             print_count = 50
+#             if (i % print_count == 0) and (i != 0):
+# #                 plot_graph(episodes, scores, avg_scores, obj)
+#                 print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, self.epsilon, avg_score))
+#                 t2 = time.perf_counter()
+#                 print("Finished {} episodes in {} seconds".format(print_count, t2-t1))
+#                 t1 = time.perf_counter()
                 
             if self.epsilon > self.epsilon_min:
                 self.epsilon *= self.epsilon_decay
             
 
             
-            if (i==0) or (i==num_episodes-1):
-                self.model.save(("saved_networks/dqn_model{0}".format(i)))
-                self.model.save_weights(("saved_networks/dqn_model{0}/net_weights{0}.h5".format(i)))
-                txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
-                                                                                                  score, self.epsilon,
-                                                                                                  avg_score))
-#                 f += 1
-                print("Network saved")
+#             if (i==0) or (i==num_episodes-1):
+#                 self.model.save(("saved_networks/dqn_model{0}".format(i)))
+#                 self.model.save_weights(("saved_networks/dqn_model{0}/net_weights{0}.h5".format(i)))
+#                 txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
+#                                                                                                   score, self.epsilon,
+#                                                                                                   avg_score))
+# #                 f += 1
+#                 print("Network saved")
 
-        txt.close()
+        # txt.close()
         
         if graph:
-            
             plot_graph(episodes, scores, avg_scores, obj)
-#             df = pd.DataFrame({'x': episodes, 'Score': scores, 'Average Score': avg_scores, 'Solved Requirement': obj})
-
-#             plt.plot('x', 'Score', data=df, marker='', color='blue', linewidth=2, label='Score')
-#             plt.plot('x', 'Average Score', data=df, marker='', color='orange', linewidth=2, linestyle='dashed',
-#                      label='AverageScore')
-#             plt.plot('x', 'Solved Requirement', data=df, marker='', color='red', linewidth=2, linestyle='dashed',
-#                      label='Solved Requirement')
-#             plt.legend()
-#             plt.savefig('LunarLander_Train.png')
             
-        return scores
+        return scores, avg_scores
 
     def test(self, env, num_episodes, file_type, file, graph):
         if file_type == 'tf':
