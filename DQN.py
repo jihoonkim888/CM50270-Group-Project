@@ -10,6 +10,7 @@ from tensorflow.python.keras import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
+tf.keras.backend.set_floatx('float64')
 
 class ReplayBuffer:
     
@@ -181,13 +182,13 @@ class Agent:
             
             # avg_score_10 = np.mean(scores[-10:])
             
-#             print_count = 50
-#             if (i % print_count == 0) and (i != 0):
-# #                 plot_graph(episodes, scores, avg_scores, obj)
-#                 print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, self.epsilon, avg_score))
-#                 t2 = time.perf_counter()
-#                 print("Finished {} episodes in {} seconds".format(print_count, t2-t1))
-#                 t1 = time.perf_counter()
+            print_count = 50
+            if (i % print_count == 0) and (i != 0):
+#                 plot_graph(episodes, scores, avg_scores, obj)
+                print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, round(self.epsilon, 2), round(avg_score, 2)))
+                t2 = time.perf_counter()
+                print("Finished {} episodes in {} seconds. Running...".format(print_count, t2-t1))
+                t1 = time.perf_counter()
                 
             if self.epsilon > self.epsilon_min:
                 self.epsilon *= self.epsilon_decay
