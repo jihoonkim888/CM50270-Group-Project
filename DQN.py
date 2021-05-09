@@ -6,11 +6,19 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+import tensorflow as tf
 from tensorflow.python.keras import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
 tf.keras.backend.set_floatx('float64')
+
+### Prevent GPU memory lock
+# import tensorflow as tf
+gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
+    
 
 class ReplayBuffer:
     
