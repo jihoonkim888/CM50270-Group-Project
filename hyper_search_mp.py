@@ -1,6 +1,6 @@
 ### For Hex server
 import os
-# os.environ['CUDA_VISIBLE_DEVICES'] = '4'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 ### Prevent GPU memory lock
 import tensorflow as tf
