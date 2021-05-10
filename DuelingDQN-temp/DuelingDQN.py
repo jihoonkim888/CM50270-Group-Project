@@ -74,6 +74,7 @@ def plot_graph(episodes, scores, avg_scores, obj):
 class Agent:
     def __init__(self, lr, gamma, num_actions, epsilon, batch_size, input_dim):
         self.action_space = [i for i in range(num_actions)]
+        self.lr = lr
         self.gamma = gamma
         self.epsilon = epsilon
         self.batch_size = batch_size
@@ -173,6 +174,13 @@ class Agent:
             
     
             self.epsilon *= self.epsilon_decay
+        
+           # Save the model before and after the train
+            if i==num_episodes-1:  # Save the model in the last episode
+                
+                self.model.save(("saved_networks/duelingdqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
+                self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
+                print("Saved trained model and weights")
             
 
         if graph:
@@ -210,12 +218,6 @@ class Agent:
             self.avg_scores.append(avg_score)
             print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, episode_score, self.epsilon,
                                                                              avg_score))
-            
-           # Save the model before and after the train
-            if i==num_episodes-1:  # Save the model in the last episode
-                self.model.save(("saved_networks/duelingdqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
-                self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
-                
 
         if graph:
             df = pd.DataFrame({'x': episodes, 'Score': self.scores, 'Average Score': self.avg_scores, 'Solved Requirement': obj})

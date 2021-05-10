@@ -14,7 +14,7 @@ import multiprocessing
 
 env = gym.make("LunarLander-v2")
 spec = gym.spec("LunarLander-v2")
-num_episodes = 10
+num_episodes = 5
 
 
 def run(lr, gamma):
@@ -28,7 +28,7 @@ def run(lr, gamma):
     earlystopping = True
     
     try:
-        agent = model.Agent(lr=0.00075, gamma=0.99, num_actions=4, epsilon=1.0, batch_size=64, input_dim=8)
+        agent = model.Agent(lr=lr, gamma=gamma, num_actions=4, epsilon=1.0, batch_size=64, input_dim=8)
         scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
 
         return {'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores}
