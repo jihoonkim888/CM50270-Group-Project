@@ -26,7 +26,7 @@ def plot_comparison(data):
     plt.show()
 
 
-def run(lr, gamma, num_gpu):
+def run(lr, gamma):
     
     import DQN as model
     
