@@ -15,7 +15,7 @@ from itertools import product
 
 env = gym.make("LunarLander-v2")
 spec = gym.spec("LunarLander-v2")
-num_episodes = 2500
+num_episodes = 10
 
 
 def plot_comparison(data):
@@ -28,31 +28,31 @@ def plot_comparison(data):
 
 
 def run(lr, gamma):
+    import os
     os.environ['CUDA_VISIBLE_DEVICES'] = '1' 
+    
     #import DQN as model
     import DuelingDQN as model
     
     graph = False
     earlystopping = True
     
-    try:
-        agent = model.Agent(lr=0.00075, gamma=0.99, num_actions=4, epsilon=1.0, batch_size=64, input_dim=8)
-        scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
-        data.append({'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores})
-        df_data = pd.DataFrame(data)
-        df_data.to_csv("hyper_search_DuelingDQN.csv")
-        print("\t\tDone!")
-    
-    except Exception as e:
-        print("Error occurred:")
-        print(e)
-        data.append({'lr':lr, 'gamma':gamma, 'scores':None, 'avg_scores':None})
+#     try:
+    agent = model.Agent(lr=0.00075, gamma=0.99, num_actions=4, epsilon=1.0, batch_size=64, input_dim=8)
+    scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
+    data.append({'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores})
+    df_data = pd.DataFrame(data)
+    df_data.to_csv("hyper_search_DuelingDQN.csv")
+    print("\t\tDone!")
+
+#     except Exception as e:
+#         print("Error occurred:")
+#         print(e)
+#         data.append({'lr':lr, 'gamma':gamma, 'scores':None, 'avg_scores':None})
              
 
 if __name__ == '__main__':
-    
-    
-    
+
     data = []
     
     ### HYPERPARAMETER GRIDS

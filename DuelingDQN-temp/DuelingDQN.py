@@ -126,7 +126,7 @@ class Agent:
     
     def train_model(self, env, num_episodes, graph, earlystopping=True):
 
-        self.scores, episodes, self.avg_scores, obj = [], [], [], []
+        scores, episodes, avg_scores, obj = [], [], [], []
         goal = 150
         f = 0
         avg_score = 0
@@ -156,11 +156,11 @@ class Agent:
                 self.store_tuple(state, action, reward, new_state, done)
                 state = new_state
                 self.train()
-            self.scores.append(score)
+            scores.append(score)
             obj.append(goal)
             episodes.append(i)
-            avg_score = np.mean(self.scores[-100:])
-            self.avg_scores.append(avg_score)
+            avg_score = np.mean(scores[-100:])
+            avg_scores.append(avg_score)
 
             print_count = 50
             if (i % print_count == 0) and (i != 0):
