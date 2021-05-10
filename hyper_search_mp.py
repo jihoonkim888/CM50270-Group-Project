@@ -7,14 +7,12 @@ for gpu in gpus:
 import pandas as pd
 import matplotlib.pyplot as plt
 import gym
-from tqdm import tqdm
 
 import multiprocessing
-from itertools import product
 
 env = gym.make("LunarLander-v2")
 spec = gym.spec("LunarLander-v2")
-num_episodes = 2500
+num_episodes = 5
 
 
 def plot_comparison(data):
@@ -28,7 +26,7 @@ def plot_comparison(data):
 
 def run(lr, gamma):
     
-    import DQN as model
+    import DQN as model ### CHOOSE DQN OR DuelingDQN
     
     graph = False
     earlystopping = True
@@ -36,22 +34,16 @@ def run(lr, gamma):
     try:
         agent = model.Agent(lr=lr, gamma=gamma, epsilon=1.0, epsilon_decay=0.995, batch_size=64)
         scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
-        data.append({'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores})
-        df_data = pd.DataFrame(data)
-        df_data.to_csv("hyper_search_DQN.csv")
-        print("\t\tDone!")
+        return {'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores}
     
     except Exception as e:
         print("Error occurred:")
         print(e)
         data.append({'lr':lr, 'gamma':gamma, 'scores':None, 'avg_scores':None})
-             
+
 
 if __name__ == '__main__':
     
-    
-    
-    data = []
     
     ### HYPERPARAMETER GRIDS
     lr_grid = [0.001, 0.0001]
@@ -64,11 +56,11 @@ if __name__ == '__main__':
             hyper_sets.append(tuple([lr, gamma]))
 
     with multiprocessing.Pool(processes=4) as pool:
-        data = pool.starmap(run, hyper_sets)
+        data_all = pool.starmap(run, hyper_sets)
+        print('data_all:', data_all)
        
-    df_data = pd.DataFrame(data)
-    df_data.to_csv("df_data.csv")
+    df_data = pd.DataFrame(data_all)
+    df_data.to_csv("df_data_DQN.csv") ### CHOOSE DQN OR DuelingDQN
         
     print("Processes are successfully finished.")
     
-    plot_comparison(data)
