@@ -1,4 +1,5 @@
 import gym
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -13,10 +14,10 @@ class ReplayBuffer:
     def __init__(self, size, input_shape):
         self.size = size
         self.counter = 0
-        self.state_buffer = np.zeros((self.size, *input_shape), dtype=np.float32)
+        self.state_buffer = np.zeros((self.size, input_shape), dtype=np.float32)
         self.action_buffer = np.zeros(self.size, dtype=np.int32)
         self.reward_buffer = np.zeros(self.size, dtype=np.float32)
-        self.new_state_buffer = np.zeros((self.size, *input_shape), dtype=np.float32)
+        self.new_state_buffer = np.zeros((self.size, input_shape), dtype=np.float32)
         self.terminal_buffer = np.zeros(self.size, dtype=np.bool_)
 
     def store_tuples(self, state, action, reward, new_state, done):
@@ -126,10 +127,12 @@ class Agent:
     def train_model(self, env, num_episodes, graph, earlystopping=True):
 
         self.scores, episodes, self.avg_scores, obj = [], [], [], []
-        goal = 200
+        goal = 150
         f = 0
         avg_score = 0
         #txt = open("saved_networks.txt", "w")
+        
+        t1 = time.perf_counter()
 
         for i in range(num_episodes):
             # Early stopping...
@@ -167,6 +170,8 @@ class Agent:
                 print("Finished {} episodes in {} seconds. Running...".format(print_count, t2-t1))
                 t1 = time.perf_counter()
 #            print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, self.epsilon,avg_score))
+            
+    
             self.epsilon *= self.epsilon_decay
             
 
