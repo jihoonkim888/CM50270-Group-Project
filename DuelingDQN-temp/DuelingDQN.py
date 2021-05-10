@@ -139,13 +139,11 @@ class Agent:
             # Early stopping...
             if earlystopping:
                 if avg_score > goal:
-                    print("The average rewards of the last 100 episodes > {}. Early stopping in Episode {}...".format(goal, i))
-                    self.model.save(("saved_networks/dqn_model{0}".format(i)))
-                    self.model.save_weights(("saved_networks/dqn_model{0}/net_weights{0}.h5".format(i)))
-                    txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,\
-                                                                                                      score, self.epsilon,\
-                                                                                                      avg_score))
-                    return
+                    self.model.save(("saved_networks/duelingdqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
+                    self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
+                    print("Saved trained model and weights")
+                    
+                    return scores, avg_scores
 
             done = False
             score = 0.0
