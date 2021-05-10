@@ -11,20 +11,10 @@ from tqdm import tqdm
 import os
 
 import multiprocessing
-from itertools import product
 
 env = gym.make("LunarLander-v2")
 spec = gym.spec("LunarLander-v2")
 num_episodes = 10
-
-
-def plot_comparison(data):
-    for row in data:
-        plt.plot(row['avg_scores'], label="lr={} gamma={}".format(row['lr'], row['gamma']))
-    plt.xlabel("Episode")
-    plt.ylabel("Average rewards over 100 episodes")
-    plt.legend()
-    plt.show()
 
 
 def run(lr, gamma):
@@ -37,23 +27,20 @@ def run(lr, gamma):
     graph = False
     earlystopping = True
     
-#     try:
-    agent = model.Agent(lr=0.00075, gamma=0.99, num_actions=4, epsilon=1.0, batch_size=64, input_dim=8)
-    scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
-    data.append({'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores})
-    df_data = pd.DataFrame(data)
-    df_data.to_csv("hyper_search_DuelingDQN.csv")
-    print("\t\tDone!")
+    try:
+        agent = model.Agent(lr=0.00075, gamma=0.99, num_actions=4, epsilon=1.0, batch_size=64, input_dim=8)
+        scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
 
-#     except Exception as e:
-#         print("Error occurred:")
-#         print(e)
-#         data.append({'lr':lr, 'gamma':gamma, 'scores':None, 'avg_scores':None})
+        return {'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores}
+
+    except Exception as e:
+        print("Error occurred:")
+        print(e)
+        data.append({'lr':lr, 'gamma':gamma, 'scores':None, 'avg_scores':None})
              
 
 if __name__ == '__main__':
 
-    data = []
     
     ### HYPERPARAMETER GRIDS
     lr_grid = [0.001, 0.0001]
@@ -66,11 +53,10 @@ if __name__ == '__main__':
             hyper_sets.append(tuple([lr, gamma]))
 
     with multiprocessing.Pool(processes=4) as pool:
-        data = pool.starmap(run, hyper_sets)
+        data_all = pool.starmap(run, hyper_sets)
+        print('data_all:', data_all)
        
-    df_data = pd.DataFrame(data)
-    df_data.to_csv("df_data.csv")
+    df_data = pd.DataFrame(data_all)
+    df_data.to_csv("df_data_DQN.csv") ### CHOOSE DQN OR DuelingDQN
         
     print("Processes are successfully finished.")
-    
-    plot_comparison(data)
