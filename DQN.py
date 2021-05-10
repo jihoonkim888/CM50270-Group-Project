@@ -6,15 +6,20 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+import os 
+os.environ['CUDA_VISIBLE_DEVICES'] = '3' # For Hex
+
 import tensorflow as tf
 from tensorflow.python.keras import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
+
+
 tf.keras.backend.set_floatx('float64')
 
 ### Prevent GPU memory lock
-# import tensorflow as tf
+import tensorflow as tf
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
@@ -85,11 +90,12 @@ class Agent:
         input_dims = 8
         num_actions = 4
         self.action_space = [i for i in range(num_actions)]
+        self.lr = lr
         self.gamma = gamma
         self.epsilon = epsilon
         self.batch_size = batch_size
         self.epsilon_decay = epsilon_decay
-        self.epsilon_min = 0.01
+        self.epsilon_min = 0.1
         self.update_rate = 120
         self.step_counter = 0
 
@@ -158,15 +164,15 @@ class Agent:
 
         for i in range(num_episodes):
 
-            # Early stopping...
+            # Early stopping
             if earlystopping:
 	            if avg_score > goal:
 	                print("The average rewards of the last 100 episodes > {}. Early stopping in Episode {}...".format(goal, i))
 	                self.model.save(("saved_networks/dqn_model{0}".format(i)))
 	                self.model.save_weights(("saved_networks/dqn_model{0}/net_weights{0}.h5".format(i)))
-	                txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
-	                                                                                                  score, self.epsilon,
-	                                                                                                  avg_score))
+# 	                txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
+# 	                                                                                                  score, self.epsilon,
+# 	                                                                                                  avg_score))
 	                return
 
             done = False
@@ -190,10 +196,11 @@ class Agent:
             
             # avg_score_10 = np.mean(scores[-10:])
             
+            # Print progress for every print_count
             print_count = 50
             if (i % print_count == 0) and (i != 0):
 #                 plot_graph(episodes, scores, avg_scores, obj)
-                print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, round(self.epsilon, 2), round(avg_score, 2)))
+                print("Episode {0}/{1}, Score: {2} epsilon: {3} , AVG Score: {4}".format(i, num_episodes, score, round(self.epsilon, 2), round(avg_score, 2)))
                 t2 = time.perf_counter()
                 print("Finished {} episodes in {} seconds. Running...".format(print_count, t2-t1))
                 t1 = time.perf_counter()
@@ -201,16 +208,16 @@ class Agent:
             if self.epsilon > self.epsilon_min:
                 self.epsilon *= self.epsilon_decay
             
-
-            
-#             if (i==0) or (i==num_episodes-1):
-#                 self.model.save(("saved_networks/dqn_model{0}".format(i)))
-#                 self.model.save_weights(("saved_networks/dqn_model{0}/net_weights{0}.h5".format(i)))
-#                 txt.write("Save {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
+            # Save the model before and after the train
+            if (i==0) or (i==num_episodes-1):
+                self.model.save(("saved_networks/dqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
+                self.model.save_weights(("saved_networks/dqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
+                
+#                 txt.write("Save weights for {0} - Episode {1}/{2}, Score: {3} ({4}), AVG Score: {5}\n".format(i, i, num_episodes,
 #                                                                                                   score, self.epsilon,
 #                                                                                                   avg_score))
-# #                 f += 1
-#                 print("Network saved")
+#                 f += 1
+                print("Network saved")
 
         # txt.close()
         
