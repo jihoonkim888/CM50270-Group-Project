@@ -209,7 +209,7 @@ class Agent:
                 self.epsilon *= self.epsilon_decay
             
             # Save the model before and after the train
-            if (i==0) or (i==num_episodes-1):
+            if i==num_episodes-1:
                 self.model.save(("saved_networks/dqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
                 self.model.save_weights(("saved_networks/dqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
                 
