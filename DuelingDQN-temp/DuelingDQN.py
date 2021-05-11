@@ -133,8 +133,8 @@ class Agent:
             if earlystopping:
                 if avg_score > goal:
                     self.model.save(("saved_networks/duelingdqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
-                    self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
-                    print("Saved trained model and weights")
+#                     self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
+#                     print("Saved trained model and weights")
                     
                     return scores, avg_scores
 
@@ -170,8 +170,8 @@ class Agent:
             if i==num_episodes-1:  # Save the model in the last episode
                 
                 self.model.save(("saved_networks/duelingdqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
-                self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
-                print("Saved trained model and weights")
+#                 self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
+                print("Saved trained model")
 
         return scores, avg_scores
 
