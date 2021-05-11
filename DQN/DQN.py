@@ -159,7 +159,7 @@ class Agent:
                 if avg_score > goal:
                     print(f"lr={self.lr} gamma={self.gamma} Early stopping on episode {i}...")
                     self.model.save(("saved_networks/dqn_model_{0}_{1}_{2}_es".format(i, self.lr, self.gamma)))
-#                     self.model.save_weights(("saved_networks/dqn_model_{0}_{1}_{2}_es/net_weights_{0}_{1}_{2}_es.h5".format(i, self.lr, self.gamma)))
+                    self.model.save_weights(("saved_networks/dqn_model_{0}_{1}_{2}_es/net_weights_{0}_{1}_{2}_es.h5".format(i, self.lr, self.gamma)))
                     return scores, avg_scores
 
             done = False
@@ -197,7 +197,7 @@ class Agent:
             # Save the model before and after the train
             if i==num_episodes-1:
                     self.model.save(("saved_networks/dqn_model_{0}_{1}_{2}_es".format(i, self.lr, self.gamma)))
-#                     self.model.save_weights(("saved_networks/dqn_model_{0}_{1}_{2}_es/net_weights_{0}_{1}_{2}_es.h5".format(i, self.lr, self.gamma)))
+                    self.model.save_weights(("saved_networks/dqn_model_{0}_{1}_{2}_es/net_weights_{0}_{1}_{2}_es.h5".format(i, self.lr, self.gamma)))
                     return scores, avg_scores
 
         # txt.close()
