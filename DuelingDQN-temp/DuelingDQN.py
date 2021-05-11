@@ -77,8 +77,8 @@ class Agent:
         self.step_counter = 0
         self.buffer = ReplayBuffer(500000, input_dim)
         
-        self.model = DuelingDQN(num_actions, 128, 128)
-        self.target_model = DuelingDQN(num_actions, 128, 128)
+        self.model = DuelingDQN(num_actions, 512, 256)
+        self.target_model = DuelingDQN(num_actions, 512, 256)
         self.model.compile(optimizer=Adam(learning_rate=lr), loss='mse')
         self.target_model.compile(optimizer=Adam(learning_rate=lr), loss='mse')
 
