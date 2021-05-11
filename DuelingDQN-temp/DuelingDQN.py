@@ -60,6 +60,7 @@ class DuelingDQN(keras.Model):
 
         return Q, A
 		
+        
 def plot_graph(episodes, scores, avg_scores, obj):
     df = pd.DataFrame({'x': episodes, 'Score': scores, 'Average Score': avg_scores, 'Solved Requirement': obj})
 
@@ -72,17 +73,19 @@ def plot_graph(episodes, scores, avg_scores, obj):
     plt.show()
 
 class Agent:
-    def __init__(self, lr, gamma, num_actions, epsilon, batch_size, input_dim):
+    def __init__(self, lr, gamma, epsilon, batch_size):
+        input_dims = 8
+        num_actions = 4
         self.action_space = [i for i in range(num_actions)]
         self.lr = lr
         self.gamma = gamma
         self.epsilon = epsilon
         self.batch_size = batch_size
         self.epsilon_decay = 0.9995
-        self.epsilon_final = 0.005
+        self.epsilon_min = 0.1
         self.update_rate = 120
         self.step_counter = 0
-        self.buffer = ReplayBuffer(100000, input_dim)
+        self.buffer = ReplayBuffer(500000, input_dim)
         
         self.model = DuelingDQN(num_actions, 128, 128)
         self.target_model = DuelingDQN(num_actions, 128, 128)
@@ -166,12 +169,13 @@ class Agent:
 #                 plot_graph(episodes, scores, avg_scores, obj)
                 print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, round(self.epsilon, 2), round(avg_score, 2)))
                 t2 = time.perf_counter()
-                print("Finished {} episodes in {} seconds. Running...".format(print_count, t2-t1))
+                print("lr={} gamma={} Finished {} episodes in {} seconds. Running...".format(self.lr, self.gamma, print_count, t2-t1))
                 t1 = time.perf_counter()
 #            print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, self.epsilon,avg_score))
             
     
-            self.epsilon *= self.epsilon_decay
+            if self.epsilon > self.epsilon_min:
+                self.epsilon *= self.epsilon_decay
         
            # Save the model before and after the train
             if i==num_episodes-1:  # Save the model in the last episode
