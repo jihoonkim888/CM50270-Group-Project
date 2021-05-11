@@ -147,7 +147,7 @@ class Agent:
     def train_model(self, env, num_episodes, earlystopping=True):
         
         scores, episodes, avg_scores, obj = [], [], [], []
-        goal = 150
+        goal = 200
         avg_score = 0
         # txt = open("saved_networks.txt", "w")
         t1 = time.perf_counter()
