@@ -23,13 +23,12 @@ print("========================================")
 def run(lr, gamma):
     
     import DQN as model ### CHOOSE DQN OR DuelingDQN
-    
-    graph = False
+  
     earlystopping = True
     
     try:
         agent = model.Agent(lr=lr, gamma=gamma, epsilon=1.0, epsilon_decay=0.995, batch_size=64)
-        scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
+        scores, avg_scores = agent.train_model(env, num_episodes, earlystopping=earlystopping)
         return {'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores}
     
     except Exception as e:

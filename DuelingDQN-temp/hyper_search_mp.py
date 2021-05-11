@@ -29,13 +29,12 @@ def run(lr, gamma):
     
     #import DQN as model
     import DuelingDQN as model
-    
-    graph = False
+
     earlystopping = True
     
     try:
         agent = model.Agent(lr=lr, gamma=gamma, epsilon=1.0, batch_size=64)
-        scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
+        scores, avg_scores = agent.train_model(env, num_episodes, earlystopping=earlystopping)
 
         return {'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores}
 
