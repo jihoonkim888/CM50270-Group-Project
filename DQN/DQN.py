@@ -204,32 +204,26 @@ class Agent:
             
         return scores, avg_scores
 
-    def test(self, env, num_episodes, file_type, file):
-        if file_type == 'tf':
-            self.model = tf.keras.models.load_model(file)
-        elif file_type == 'h5':
-            self.train_model(env, 5, False)
-            self.model.load_weights(file)
+    
+    def test(self, env, num_episodes, file):
+
+        self.train_model(env, 5, False)
+        self.model.load_weights(file)
+        
         self.epsilon = 0.0
-        scores, episodes, avg_scores, obj = [], [], [], []
-        goal = 200
-        score = 0.0
+#         scores, episodes, avg_scores, obj = [], [], [], []
         for i in range(num_episodes):
             state = env.reset()
             done = False
             episode_score = 0.0
             while not done:
+                env.render()
                 action = self.get_action(state)
                 next_state, reward, done, _ = env.step(action)
                 episode_score += reward
                 state = next_state
-            score += episode_score
-            scores.append(episode_score)
-            print(f"{i}th round - {episode_score}")
-            obj.append(goal)
-            episodes.append(i)
-            avg_score = np.mean(scores[-100:])
-            avg_scores.append(avg_score)
+                
+        return
 
 
 
