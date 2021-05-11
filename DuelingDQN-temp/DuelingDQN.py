@@ -74,7 +74,7 @@ def plot_graph(episodes, scores, avg_scores, obj):
 
 class Agent:
     def __init__(self, lr, gamma, epsilon, batch_size):
-        input_dims = 8
+        input_dim = 8
         num_actions = 4
         self.action_space = [i for i in range(num_actions)]
         self.lr = lr
