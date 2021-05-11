@@ -14,7 +14,13 @@ import multiprocessing
 
 env = gym.make("LunarLander-v2")
 spec = gym.spec("LunarLander-v2")
-num_episodes = 5
+
+
+print("========================================")
+num_episodes = int(input("Number of episodes to run: "))
+
+print(f"Running {num_episodes} episodes...")
+print("========================================")
 
 
 def run(lr, gamma):
@@ -28,7 +34,7 @@ def run(lr, gamma):
     earlystopping = True
     
     try:
-        agent = model.Agent(lr=lr, gamma=gamma, num_actions=4, epsilon=1.0, batch_size=64, input_dim=8)
+        agent = model.Agent(lr=lr, gamma=gamma, epsilon=1.0, batch_size=64)
         scores, avg_scores = agent.train_model(env, num_episodes, graph, earlystopping=earlystopping)
 
         return {'lr':lr, 'gamma':gamma, 'scores':scores, 'avg_scores':avg_scores}
@@ -57,6 +63,6 @@ if __name__ == '__main__':
         print('data_all:', data_all)
        
     df_data = pd.DataFrame(data_all)
-    df_data.to_csv("df_data_DQN.csv") ### CHOOSE DQN OR DuelingDQN
+    df_data.to_csv(f"df_data_DuelingDQN_{num_episodes}.csv") ### CHOOSE DQN OR DuelingDQN
         
     print("Processes are successfully finished.")
