@@ -103,7 +103,8 @@ class Agent:
             action = np.random.choice(self.action_space)
         else:
             # print(state.shape)
-            actions = self.model.predict(np.array(state))
+#             actions = self.model.predict(np.array(state))
+            actions = self.model(np.array(state))
             action = tf.math.argmax(actions, axis=1).numpy()[0]
 
         return action
@@ -206,23 +207,28 @@ class Agent:
 
     
     def test(self, env, num_episodes, file):
-
-#         self.train_model(env, 5, False)
+        # for h5 weight files
+        self.train_model(env, 5, False)
         self.model.load_weights(file)
+        
+        # for model saved as tf
+#         self.model = tf.keras.models.load_model(file)
         
         self.epsilon = 0.0
 #         scores, episodes, avg_scores, obj = [], [], [], []
         for i in range(num_episodes):
             state = env.reset()
+            print('state:', state)
             done = False
             episode_score = 0.0
+            print("Start rendering...")
             while not done:
                 env.render()
                 action = self.get_action(state)
                 next_state, reward, done, _ = env.step(action)
                 episode_score += reward
                 state = next_state
-                
+            print("Done!")
         return
 
 
