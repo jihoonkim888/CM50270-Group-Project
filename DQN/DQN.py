@@ -211,24 +211,27 @@ class Agent:
         self.train_model(env, 5, False)
         self.model.load_weights(file)
         
-        # for model saved as tf
+#         for model saved as tf
 #         self.model = tf.keras.models.load_model(file)
         
         self.epsilon = 0.0
 #         scores, episodes, avg_scores, obj = [], [], [], []
+        print("Start rendering...")
+    
         for i in range(num_episodes):
             state = env.reset()
             print('state:', state)
             done = False
             episode_score = 0.0
-            print("Start rendering...")
+        
             while not done:
                 env.render()
+                # print('state:', state)
+                state = state.reshape(1,-1)
                 action = self.get_action(state)
                 next_state, reward, done, _ = env.step(action)
-                episode_score += reward
                 state = next_state
-            print("Done!")
+        print("Done!")
         return
 
 
