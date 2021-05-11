@@ -56,7 +56,7 @@ if __name__ == '__main__':
         print('data_all:', data_all)
        
     df_data = pd.DataFrame(data_all)
-    df_data.to_csv("df_data_DQN.csv") ### CHOOSE DQN OR DuelingDQN
+    df_data.to_csv(f"df_data_DQN_{num_episodes}.csv") ### CHOOSE DQN OR DuelingDQN
         
     print("Processes are successfully finished.")
     
