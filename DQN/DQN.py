@@ -73,17 +73,6 @@ def model(lr, num_actions, input_dims):
     return model
 
 
-def plot_graph(episodes, scores, avg_scores, obj):
-    df = pd.DataFrame({'x': episodes, 'Score': scores, 'Average Score': avg_scores, 'Solved Requirement': obj})
-
-    plt.plot('x', 'Score', data=df, marker='', color='blue', linewidth=2, label='Score')
-    plt.plot('x', 'Average Score', data=df, marker='', color='orange', linewidth=2, linestyle='dashed',
-             label='AverageScore')
-    plt.plot('x', 'Solved Requirement', data=df, marker='', color='red', linewidth=2, linestyle='dashed',
-             label='Solved Requirement')
-    plt.legend()
-    plt.show()
-
 class Agent:
     
     def __init__(self, lr, gamma, epsilon, epsilon_decay, batch_size):
@@ -154,7 +143,7 @@ class Agent:
 #         # print(target_q_val.shape, q_target.shape, indices.shape, action_batch.shape)
 #         q_target[[indices], [action_batch]] = target_q_val
 
-    def train_model(self, env, num_episodes, graph, earlystopping=True):
+    def train_model(self, env, num_episodes, earlystopping=True):
         
         scores, episodes, avg_scores, obj = [], [], [], []
         goal = 150
@@ -195,7 +184,6 @@ class Agent:
             # Print progress for every print_count
             print_count = 50
             if (i % print_count == 0) and (i != 0):
-#                 plot_graph(episodes, scores, avg_scores, obj)
                 print("Episode {0}/{1}, Score: {2} epsilon: {3} , AVG Score: {4}".format(i, num_episodes, score, round(self.epsilon, 2), round(avg_score, 2)))
                 t2 = time.perf_counter()
                 print("Finished {} episodes in {} seconds. Running...".format(print_count, t2-t1))
@@ -213,12 +201,10 @@ class Agent:
 
         # txt.close()
         
-        if graph:
-            plot_graph(episodes, scores, avg_scores, obj)
             
         return scores, avg_scores
 
-    def test(self, env, num_episodes, file_type, file, graph):
+    def test(self, env, num_episodes, file_type, file):
         if file_type == 'tf':
             self.model = tf.keras.models.load_model(file)
         elif file_type == 'h5':
@@ -244,19 +230,6 @@ class Agent:
             episodes.append(i)
             avg_score = np.mean(scores[-100:])
             avg_scores.append(avg_score)
-
-        if graph:
-            df = pd.DataFrame({'x': episodes, 'Score': scores, 'Average Score': avg_scores, 'Solved Requirement': obj})
-
-            plt.plot('x', 'Score', data=df, marker='', color='blue', linewidth=2, label='Score')
-            plt.plot('x', 'Average Score', data=df, marker='', color='orange', linewidth=2, linestyle='dashed',
-                     label='AverageScore')
-            plt.plot('x', 'Solved Requirement', data=df, marker='', color='red', linewidth=2, linestyle='dashed',
-                     label='Solved Requirement')
-            plt.legend()
-            plt.savefig('LunarLander_Test.png')
-
-        env.close()
 
 
 

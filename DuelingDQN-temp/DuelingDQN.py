@@ -61,16 +61,6 @@ class DuelingDQN(keras.Model):
         return Q, A
 		
         
-def plot_graph(episodes, scores, avg_scores, obj):
-    df = pd.DataFrame({'x': episodes, 'Score': scores, 'Average Score': avg_scores, 'Solved Requirement': obj})
-
-    plt.plot('x', 'Score', data=df, marker='', color='blue', linewidth=2, label='Score')
-    plt.plot('x', 'Average Score', data=df, marker='', color='orange', linewidth=2, linestyle='dashed',
-             label='AverageScore')
-    plt.plot('x', 'Solved Requirement', data=df, marker='', color='red', linewidth=2, linestyle='dashed',
-             label='Solved Requirement')
-    plt.legend()
-    plt.show()
 
 class Agent:
     def __init__(self, lr, gamma, epsilon, batch_size):
@@ -128,7 +118,7 @@ class Agent:
         self.step_counter += 1
 
     
-    def train_model(self, env, num_episodes, graph, earlystopping=True):
+    def train_model(self, env, num_episodes, earlystopping=True):
 
         scores, episodes, avg_scores, obj = [], [], [], []
         goal = 150
@@ -166,7 +156,6 @@ class Agent:
 
             print_count = 50
             if (i % print_count == 0) and (i != 0):
-#                 plot_graph(episodes, scores, avg_scores, obj)
                 print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, score, round(self.epsilon, 2), round(avg_score, 2)))
                 t2 = time.perf_counter()
                 print("lr={} gamma={} Finished {} episodes in {} seconds. Running...".format(self.lr, self.gamma, print_count, t2-t1))
@@ -183,16 +172,11 @@ class Agent:
                 self.model.save(("saved_networks/duelingdqn_model_{0}_{1}_{2}".format(i, self.lr, self.gamma)))
                 self.model.save_weights(("saved_networks/duelingdqn_model_{0}_{1}_{2}/net_weights_{0}_{1}_{2}.h5".format(i, self.lr, self.gamma)))
                 print("Saved trained model and weights")
-            
-
-        if graph:
-            plot_graph(episodes, scores, avg_scores, obj)
-
 
         return scores, avg_scores
 
     
-    def test(self, env, num_episodes, file_type, file, graph):
+    def test(self, env, num_episodes, file_type, file):
         if file_type == 'tf':
             self.model = tf.keras.models.load_model(file)
         elif file_type == 'h5':
@@ -220,16 +204,3 @@ class Agent:
             self.avg_scores.append(avg_score)
             print("Episode {0}/{1}, Score: {2} ({3}), AVG Score: {4}".format(i, num_episodes, episode_score, self.epsilon,
                                                                              avg_score))
-
-        if graph:
-            df = pd.DataFrame({'x': episodes, 'Score': self.scores, 'Average Score': self.avg_scores, 'Solved Requirement': obj})
-
-            plt.plot('x', 'Score', data=df, marker='', color='blue', linewidth=2, label='Score')
-            plt.plot('x', 'Average Score', data=df, marker='', color='orange', linewidth=2, linestyle='dashed',
-                     label='AverageScore')
-            plt.plot('x', 'Solved Requirement', data=df, marker='', color='red', linewidth=2, linestyle='dashed',
-                     label='Solved Requirement')
-            plt.legend()
-            plt.savefig('LunarLander_Test.png')
-
-        env.close()
