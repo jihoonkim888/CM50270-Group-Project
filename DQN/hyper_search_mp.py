@@ -12,7 +12,12 @@ import multiprocessing
 
 env = gym.make("LunarLander-v2")
 spec = gym.spec("LunarLander-v2")
-num_episodes = 5000
+
+print("========================================")
+num_episodes = int(input("Number of episodes to run: "))
+
+print(f"Running {num_episodes} episodes...")
+print("========================================")
 
 
 def run(lr, gamma):
